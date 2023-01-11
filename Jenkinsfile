@@ -9,8 +9,7 @@ pipeline {
         stage('Build Each Project') {
             steps {
                 script {
-                    String projects = params['SelectedProjects'].split(',')
-                    echo projects
+                    String[] projects = params['SelectedProjects'].split(',')
                     for (item in projects) {
                         echo item
                     }
