@@ -1,17 +1,12 @@
 pipeline {
     agent any
     stages {
-        stage('Hello') {
-            steps {
-                echo 'Hello World'
-            }
-        }
         stage('Build Each Project') {
             steps {
                 script {
                     String[] projects = params['SelectedProjects'].split(',')
                     for (item in projects) {
-                        echo "Building" + item + "..."
+                        echo "STARTING BUILD FOR " + item + "..."
                         build item
                     }
                 }
