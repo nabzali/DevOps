@@ -7,13 +7,14 @@ pipeline {
             }
         }
         stage('Build Each Project') {
-            steps {
-                String selections = params['Select-Projects-To-Build']
-                String[] selectionsList = selections.split(',');
-                for (project in selectionsList)
-                {
-                    build project   
-                }
+            steps {               
+                String projects = params['SelectedProjects']
+                echo projects
+                //String[] list = selections.split(',');
+                //for (project in list)
+                //{
+                //    build project   
+                //}
             }
         }
     }
