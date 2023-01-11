@@ -11,7 +11,8 @@ pipeline {
                 script {
                     String[] projects = params['SelectedProjects'].split(',')
                     for (item in projects) {
-                        echo item
+                        echo "Building" + item + "..."
+                        build item
                     }
                 }
             }
