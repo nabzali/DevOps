@@ -10,6 +10,7 @@ pipeline {
             steps {
                 script {
                     String projects = params['SelectedProjects'].split(',')
+                    echo projects
                     for (item in projects) {
                         echo item
                     }
