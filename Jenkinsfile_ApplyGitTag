@@ -6,10 +6,7 @@ pipeline {
             script {
               String tag = params['Tag']
               echo tag
-              powershell """
-                git tag ${tag}
-                git push --tags
-              """
+              sh 'git branch'
             }
         }
       }
