@@ -4,9 +4,14 @@ pipeline {
       stage('Applying Git Tag') {
         steps {
             script {
+              git branch: 'MRD-321-Auth-Test', credentialsId: '86fd752e-7896-4a07-b67c-7a0d3441e40e', url: 'http://devrepo/scm/mview/authorisationservice.git'
+              
               String tag = params['Tag']
               echo tag
-              sh 'git branch'
+              powershell """
+                git tag ${tag}
+                git push --tags
+              """
             }
         }
       }
