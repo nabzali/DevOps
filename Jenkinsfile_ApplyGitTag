@@ -1,0 +1,15 @@
+pipeline {
+    agent any
+    stages {
+      stage('Applying Git Tag') {
+        steps {
+          String tag = params['Tag']
+          echo tag
+          powershell """
+            git tag ${tag}
+            git push --tags
+          """
+        }
+      }
+    }
+}
