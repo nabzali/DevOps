@@ -4,10 +4,10 @@ pipeline {
       stage('Applying Database Backup') {
         steps {
             script {
-              def dbName = params['dbName']
+              def dbName = params['Database']
               def serverName = ".tc.mazepoint.local"
               
-              switch(params['environment']) {            
+              switch(params['Environment']) {            
                      case "Stage": 
                         echo "Stage selected"
                     	serverName = "mpstageapp" + serverName
