@@ -5,8 +5,38 @@ pipeline {
         steps {
             script {
               def dbName = params['dbName']
-              def serverNameSuffix = ".tc.mazepoint.local"
+              def serverName = ".tc.mazepoint.local"
               
+              switch(params['environment']) {            
+                     case "Stage": 
+                        echo "Stage selected"
+                    	serverName = "mpstageapp" + serverName
+                    	echo serverName
+                        break
+                     case "UAT":
+                        echo "UAT selected"
+                    	serverName = "mpuatapp" + serverName
+                    	echo serverName
+                        break
+                     case "Production": 
+                        echo "Production selected"
+                    	serverName = "mpprodapp" + serverName
+                    	echo serverName
+                        break
+                     default: 
+                        echo "Environment param is wrong"
+                    	currentBuild.result = 'ABORTED'
+                        error('Error: Unrecognised Environment parameter. Should be Stage/UAT/Production')
+                        break
+                }
+                echo "Now we will backup the database."
+                //get timestamp
+                timestamp = new java.text.SimpleDateFormat("yyyyMMMddHHmmss").format(new Date())
+                echo timestamp
+                //backup DB
+                powershell """Write-Output ${serverName}"""
+                powershell """Write-Output ${dbName}"""
+                powershell """Backup-SqlDatabase -ServerInstance ${serverName} -Database ${dbName} -BackupSetName ${timestamp}"""
               
             }
         }
