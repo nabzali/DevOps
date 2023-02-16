@@ -1,1 +1,15 @@
-
+pipeline {
+    agent any
+    stages {
+      stage('Applying Database Backup') {
+        steps {
+            script {
+              def dbName = params['dbName']
+              serverNameSuffix = ".tc.mazepoint.local"
+              
+              
+            }
+        }
+      }
+    }
+}
