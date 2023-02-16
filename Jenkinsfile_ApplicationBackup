@@ -4,9 +4,7 @@ pipeline {
       stage('Applying Database Backup') {
         steps {
             script {
-              def dbName = params['dbName']
-              def serverNameSuffix = ".tc.mazepoint.local"
-              
+              def appName = params['appName']
               
             }
         }
