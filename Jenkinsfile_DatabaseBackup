@@ -5,7 +5,7 @@ pipeline {
         steps {
             script {
               def dbName = params['dbName']
-              serverNameSuffix = ".tc.mazepoint.local"
+              def serverNameSuffix = ".tc.mazepoint.local"
               
               
             }
