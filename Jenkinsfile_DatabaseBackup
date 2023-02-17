@@ -32,11 +32,12 @@ pipeline {
                 echo "Now we will backup the database."
                 //get timestamp
                 timestamp = new java.text.SimpleDateFormat("yyyyMMMddHHmmss").format(new Date())
+                backupFileName = timestamp + ".bak"
                 echo timestamp
                 //backup DB
                 powershell """Write-Output ${serverName}"""
                 powershell """Write-Output ${dbName}"""
-                powershell """Backup-SqlDatabase -ServerInstance ${serverName} -Database ${dbName} -BackupSetName ${timestamp}"""
+                powershell """Backup-SqlDatabase -ServerInstance ${serverName} -Database ${dbName} -BackupFile ${backupFileName}"""
               
             }
         }
