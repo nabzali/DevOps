@@ -38,6 +38,10 @@ pipeline {
                 powershell """Write-Output ${serverName}"""
                 powershell """Write-Output ${dbName}"""
                 powershell """Backup-SqlDatabase -ServerInstance ${serverName} -Database ${dbName} -BackupFile ${backupFileName}"""
+                $username = "mazepoint\svc_jenkins"
+                $password = ConvertTo-SecureString  -AsPlainText -Force
+                $credential = New-Object System.Management.Automation.PSCredential($username, $password)
+                Backup-SqlDatabase -ServerInstance $serverInstance -Database $databaseName -BackupFile $backupPath -Credential $credential
               
             }
         }
