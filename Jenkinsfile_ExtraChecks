@@ -45,7 +45,7 @@ pipeline {
                     //$password = ConvertTo-SecureString 'm3ssyClub25' -AsPlainText -Force
                     ///$credential = New-Object System.Management.Automation.PSCredential($username, $password)
                 //"""
-                powershell """Backup-SqlDatabase -ServerInstance ${serverName} -Database ${dbName} -BackupFile ${backupFileName} -Credential $credential"""
+                powershell """Backup-SqlDatabase -ServerInstance ${serverName} -Database ${dbName} -BackupFile ${backupFileName}"""
             }
         }
       }
