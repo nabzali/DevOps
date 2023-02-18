@@ -1,1 +1,23 @@
-
+pipeline {
+    agent any
+    stages {
+    
+      
+      stage('Applying Git Tag') {
+        steps {
+            script {
+              String[] gitDetails = params['gitDetails'].split(',')             
+              
+              git branch: gitDetails[0], credentialsId: gitDetails[1], url: gitDetails[2]
+              
+              String tag = params['Tag']
+              echo tag
+              powershell """
+                git tag ${tag}
+                git push --tags
+              """
+            }
+        }
+      }
+    }
+}
