@@ -40,14 +40,12 @@ pipeline {
                 //backup DB
                 powershell """Write-Output ${serverName}"""
                 powershell """Write-Output ${dbName}"""
-                powershell """Backup-SqlDatabase -ServerInstance ${serverName} -Database ${dbName} -BackupFile ${backupFileName}"""
                 //powershell """
                     //$username = 'mazepoint\\svc_jenkins'
                     //$password = ConvertTo-SecureString 'm3ssyClub25' -AsPlainText -Force
                     ///$credential = New-Object System.Management.Automation.PSCredential($username, $password)
-                    Backup-SqlDatabase -ServerInstance ${serverName} -Database ${dbName} -BackupFile ${backupFileName} -Credential $credential
                 //"""
-              
+                powershell """Backup-SqlDatabase -ServerInstance ${serverName} -Database ${dbName} -BackupFile ${backupFileName} -Credential $credential"""
             }
         }
       }
