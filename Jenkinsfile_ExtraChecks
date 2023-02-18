@@ -45,7 +45,7 @@ pipeline {
                     //$username = 'mazepoint\\svc_jenkins'
                     //$password = ConvertTo-SecureString 'm3ssyClub25' -AsPlainText -Force
                     ///$credential = New-Object System.Management.Automation.PSCredential($username, $password)
-                    /Backup-SqlDatabase -ServerInstance ${serverName} -Database ${dbName} -BackupFile ${backupFileName} -Credential $credential
+                    Backup-SqlDatabase -ServerInstance ${serverName} -Database ${dbName} -BackupFile ${backupFileName} -Credential $credential
                 //"""
               
             }
