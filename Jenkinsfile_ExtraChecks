@@ -3,89 +3,90 @@ def dbName = ""
 pipeline {
     agent any
     stages {
-      stage('Applying Database Backup') {
-        when {
-          expression { params['Type'] == "dotnet" }
-        } 
-        steps {
-            script {
-              dbName = params['Database']
-              def serverName = ".tc.mazepoint.local"
-              
-              switch(params['Environment']) {            
-                     case "Stage": 
-                        echo "Stage selected"
-                    	serverName = "mpstageapp" + serverName
-                    	echo serverName
-                        break
-                     case "UAT":
-                        echo "UAT selected"
-                    	serverName = "mpuatapp" + serverName
-                    	echo serverName
-                        break
-                     case "Production": 
-                        echo "Production selected"
-                    	serverName = "mpprodapp" + serverName
-                    	echo serverName
-                        break
-                     default: 
-                        echo "Environment param is wrong"
-                    	currentBuild.result = 'ABORTED'
-                        error('Error: Unrecognised Environment parameter. Should be Stage/UAT/Production')
-                        break
+        stage('Applying Database Backup') {
+            when {
+                expression { params['Type'] == "dotnet" }
+            } 
+            steps {
+                script {
+                    dbName = params['Database']
+                    def serverName = ".tc.mazepoint.local"
+                    
+                    switch(params['Environment']) {            
+                        case "Stage": 
+                            echo "Stage selected"
+                            serverName = "mpstageapp" + serverName
+                            echo serverName
+                            break
+                        case "UAT":
+                            echo "UAT selected"
+                        serverName = "mpuatapp" + serverName
+                            echo serverName
+                            break
+                        case "Production": 
+                            echo "Production selected"
+                            serverName = "mpprodapp" + serverName
+                            echo serverName
+                            break
+                        default: 
+                            echo "Environment param is wrong"
+                            currentBuild.result = 'ABORTED'
+                            error('Error: Unrecognised Environment parameter. Should be Stage/UAT/Production')
+                            break
+                    }
+                    echo "Now we will backup the database."                
+                    //backupFileName = dbName + timestamp + ".bak"
+                    echo timestamp
+                    //backup DB
+                    powershell """Write-Output ${serverName}"""
+                    powershell """Write-Output ${dbName}"""
+                    //powershell """
+                        //$username = 'mazepoint\\svc_jenkins'
+                        //$password = ConvertTo-SecureString 'm3ssyClub25' -AsPlainText -Force
+                        ///$credential = New-Object System.Management.Automation.PSCredential($username, $password)
+                    //"""
+                    powershell """Backup-SqlDatabase -ServerInstance ${serverName} -Database ${dbName} -BackupFile ${dbName}${timestamp}.bak"""
                 }
-                echo "Now we will backup the database."                
-                //backupFileName = dbName + timestamp + ".bak"
-                echo timestamp
-                //backup DB
-                powershell """Write-Output ${serverName}"""
-                powershell """Write-Output ${dbName}"""
-                //powershell """
-                    //$username = 'mazepoint\\svc_jenkins'
-                    //$password = ConvertTo-SecureString 'm3ssyClub25' -AsPlainText -Force
-                    ///$credential = New-Object System.Management.Automation.PSCredential($username, $password)
-                //"""
-                powershell """Backup-SqlDatabase -ServerInstance ${serverName} -Database ${dbName} -BackupFile ${dbName}${timestamp}.bak"""
             }
         }
-      }
 
-      stage('Applying Application Files Backup') {
-        steps {
-            script {
+        stage('Applying Application Files Backup') {
+            steps {
+                script {
 
-              def folder = params['Application'].toLowerCase() //e.g. MazereportService ==> mazereportservice
-              echo folder
+                    def folder = params['Application'].toLowerCase() //e.g. MazereportService ==> mazereportservice
+                    echo folder
 
-              //powershell """
-              //  Enter PS-Session -ComputerName mpstageweb.tc.mazepoint.local -Credential svc_jenkins
-              //  cd C:\\Users\\svc_jenkins\\Documents\\${folder}
-              //  Compress-Archive -Path .\* -DestinationPath C:\\Users\\svc_jenkins\\BackupFiles\\${dbName}${timestamp}.zip
-              //"""
+                    //powershell """
+                    //  Enter PS-Session -ComputerName mpstageweb.tc.mazepoint.local -Credential svc_jenkins
+                    //  cd C:\\Users\\svc_jenkins\\Documents\\${folder}
+                    //  Compress-Archive -Path .\* -DestinationPath C:\\Users\\svc_jenkins\\BackupFiles\\${dbName}${timestamp}.zip
+                    //"""
 
+                }
             }
         }
-      }
-    }
-      
-      stage('Tagging the Branch (if applicable)') {
-        when {
-            expression { !params['Tag'].isEmpty() }
-        }   
-        steps {
-            script {
-              String[] gitDetails = params['gitDetails'].split(',')             
-              
-              git branch: gitDetails[0], credentialsId: gitDetails[1], url: gitDetails[2]
-              
-              String tag = params['Tag']
-              echo tag
-              powershell """
-                git tag ${tag}
-                git push --tags
-              """
+
+        stage('Tagging the Branch (if applicable)') {
+            when {
+                expression { !params['Tag'].isEmpty() }
+            }   
+            steps {
+                script {
+                    String[] gitDetails = params['gitDetails'].split(',')             
+                    
+                    git branch: gitDetails[0], credentialsId: gitDetails[1], url: gitDetails[2]
+                    
+                    String tag = params['Tag']
+                    echo tag
+                    powershell """
+                        git tag ${tag}
+                        git push --tags
+                    """
+                }
             }
         }
-      }
-    }
+
+    } 
+    
 }
