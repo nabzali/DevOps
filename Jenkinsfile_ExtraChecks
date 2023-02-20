@@ -1,3 +1,5 @@
+def timestamp = new java.text.SimpleDateFormat("yyyyMMddHHmmss").format(new Date())
+def dbName = ""
 pipeline {
     agent any
     stages {
@@ -7,7 +9,7 @@ pipeline {
         } 
         steps {
             script {
-              def dbName = params['Database']
+              dbName = params['Database']
               def serverName = ".tc.mazepoint.local"
               
               switch(params['Environment']) {            
@@ -32,10 +34,8 @@ pipeline {
                         error('Error: Unrecognised Environment parameter. Should be Stage/UAT/Production')
                         break
                 }
-                echo "Now we will backup the database."
-                //get timestamp
-                timestamp = new java.text.SimpleDateFormat("yyyyMMMddHHmmss").format(new Date())
-                backupFileName = timestamp + ".bak"
+                echo "Now we will backup the database."                
+                //backupFileName = dbName + timestamp + ".bak"
                 echo timestamp
                 //backup DB
                 powershell """Write-Output ${serverName}"""
@@ -45,10 +45,28 @@ pipeline {
                     //$password = ConvertTo-SecureString 'm3ssyClub25' -AsPlainText -Force
                     ///$credential = New-Object System.Management.Automation.PSCredential($username, $password)
                 //"""
-                powershell """Backup-SqlDatabase -ServerInstance ${serverName} -Database ${dbName} -BackupFile ${backupFileName}"""
+                powershell """Backup-SqlDatabase -ServerInstance ${serverName} -Database ${dbName} -BackupFile ${dbName}${timestamp}.bak"""
             }
         }
       }
+
+      stage('Applying Application Files Backup') {
+        steps {
+            script {
+
+              def folder = params['Application'].toLowerCase() //e.g. MazereportService ==> mazereportservice
+              echo folder
+
+              //powershell """
+              //  Enter PS-Session -ComputerName mpstageweb.tc.mazepoint.local -Credential svc_jenkins
+              //  cd C:\\Users\\svc_jenkins\\Documents\\${folder}
+              //  Compress-Archive -Path .\* -DestinationPath C:\\Users\\svc_jenkins\\BackupFiles\\${dbName}${timestamp}.zip
+              //"""
+
+            }
+        }
+      }
+    }
       
       stage('Tagging the Branch (if applicable)') {
         when {
