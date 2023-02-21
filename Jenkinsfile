@@ -1,6 +1,23 @@
 pipeline {
     agent any
-    stages {
+    stages { 
+        stage('Full Mazeiew Application Backup (if applicable)') {
+            // Done here because we cannot run a full backup when running the individual jobs
+            when {
+                expression { params['SelectionType' == "Select All Projects" }
+            }
+            steps {
+                script {
+                    powershell """
+                        Enter-PSSession -ComputerName mpstageweb.tc.mazepoint.local -Credential svc_jenkins
+                        cd C:\\Mazeview
+                        Get-WebAppPool | Stop-WebAppPool
+                        Compress-Archive -Path .\* -DestinationPath C:\\Users\\svc_jenkins\\Documents\\BackupFiles\\${appName}_${timestamp}.zip
+                        Get-WebAppPool | Start-WebAppPool
+                    """
+                }
+            }
+        }
         stage('Build Each Project') {
             steps {
                 script {
