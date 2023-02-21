@@ -3,11 +3,14 @@ pipeline {
     stages {
         stage('Build Each Project') {
             steps {
-                script {                    
+                script {
+                    
                     String[] projects = params['SelectedProjects'].split(',')
                     for (item in projects) {
                         echo "STARTING BUILD FOR " + item + "..."
-                        build job: item, parameters: [string(name: 'Tag', value: params['Tag']), string(name: 'Environment', value: params['Environment'])]
+                        build job: item, parameters: [string(name: 'Tag', value: params['Tag']),
+                                                      string(name: 'Environment', value: params['Environment']),
+                                                      string(name: 'SelectionType' value: params['SelectionType'])]
                     }
                 }
             }
