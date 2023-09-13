@@ -1,0 +1,17 @@
+{ 
+	"appName": "MazereportService", 
+	"type": "dotnet",
+	"dbName": "Mazepoint.Mazereport",
+  	"dbServer": {
+    	"Stage": "mpstageapp.tc.mazepoint.local",
+      	"UAT": "mpuatapp.tc.mazepoint.local",
+      	"Production": "mpprodapp.tc.mazepoint.local"
+    },
+  	"webServer": {
+    	"Stage": "mpstageweb.tc.mazepoint.local",
+      	"UAT": "mpuatweb.tc.mazepoint.local",
+      	"Production": "mpprodweb.tc.mazepoint.local"
+    },
+  	"gitURL": "http://devrepo/scm/mview/mazereportservice.git",
+  	"buildPath": "C:\\Mazeview"
+}
